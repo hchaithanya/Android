@@ -22,24 +22,18 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 public class MainActivity extends Activity {
 
-//    public class Timer{
-//    Timer t;
-//    volatile boolean a = false;
-//
-//        public Timer(_)
-//        {
-//            t= new Timer();
-//        }
-}
+
     private TextView songTimer;
     private int counter = 0;
     private ProgressBar progressBar;
     private ImageButton playButton;
     private MediaPlayer mediaPlayer;
-    private Handler handler= new Handler();
+    private Handler handler = new Handler();
     private long songStartTime;
     private ImageView imageView2;
     private ImageView nowplaying;
+    //private ImageButton pauseButton;
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -61,20 +55,36 @@ public class MainActivity extends Activity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-    private void initHandler()
-    {
-        handler.postDelayed(updateUI,1000);
+
+    private void initHandler() {
+        handler.postDelayed(updateUI, 1000);
     }
+
     private Runnable updateUI = new Runnable() {
         @Override
         public void run() {
             double seekPercentage = 100 * mediaPlayer.getCurrentPosition() / mediaPlayer.getDuration();
             progressBar.setProgress((int) seekPercentage);
-            handler.postDelayed(this,1000);
-            long seconds = (System.currentTimeMillis() -songStartTime) / 1000;
-        songTimer.setText(String.format("%02d:%02d", seconds/60, seconds % 60));
+            handler.postDelayed(this, 1000);
+            long seconds = (System.currentTimeMillis() - songStartTime) / 1000;
+            songTimer.setText(String.format("%02d:%02d", seconds / 60, seconds % 60));
         }
     };
+
+    private void initView() {
+
+        songTimer = (TextView) findViewById(R.id.songTimer);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        playButton = (ImageButton) findViewById(R.id.playButton);
+        mediaPlayer = MediaPlayer.create(this, R.raw.newsong);
+        songTimer.setText(String.format("%02d:%02d", 0, 0));
+        imageView2 = (ImageView) findViewById(R.id.imageView2);
+        imageView2.setImageDrawable(getResources().getDrawable(R.drawable.low));
+        //pauseButton = (ImageButton) findViewById(R.id.pauseButton);
+       // nowplaying = (ImageView) findViewById(R.id.nowplaying);
+       // nowplaying.setImageDrawable(getResources().getDrawable(R.drawable.nowplaying));
+
+    }
 
     private void initListeners() {
 
@@ -82,23 +92,22 @@ public class MainActivity extends Activity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(mediaPlayer.isPlaying())
-                        {
-
-                            handler.removeCallbacks(updateUI);
-                           // Log.i("Hey");
+                        if (mediaPlayer.isPlaying()) {
                             mediaPlayer.pause();
+                            handler.removeCallbacks(updateUI);
+                            // Log.i("Hey");
 
+
+                            playButton.setImageResource(R.drawable.playbutton);
 
                             //playButton.("Play");
 
-                        }
-                        else {
+                        } else {
                             initHandler();
                             mediaPlayer.start();
-                          //  playButton.setText("Stop");
+                            //  playButton.setText("Stop");
                             songStartTime = System.currentTimeMillis();
-
+                            playButton.setImageResource(R.drawable.pause);
 
                         }
 
@@ -109,26 +118,13 @@ public class MainActivity extends Activity {
 
     }
 
-    private void initView() {
 
-        songTimer = (TextView) findViewById(R.id.songTimer);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        playButton = (ImageButton) findViewById(R.id.playButton);
-        mediaPlayer = MediaPlayer.create(this,R.raw.newsong);
-        songTimer.setText(String.format("%02d:%02d",0,0));
-        imageView2 = (ImageView) findViewById(R.id.imageView2) ;
-        imageView2.setImageDrawable(getResources().getDrawable(R.drawable.low));
-        nowplaying = (ImageView) findViewById(R.id.nowplaying);
-        nowplaying.setImageDrawable(getResources().getDrawable(R.drawable.nowplaying));
-
-    }
-
-
+}
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    public Action getIndexApiAction() {
+  /*  public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
                 .setName("Main Page") // TODO: Define a title for the content shown.
                 // TODO: Make sure this auto-generated URL is correct.
@@ -160,3 +156,4 @@ public class MainActivity extends Activity {
         client.disconnect();
     }
 }
+*/
